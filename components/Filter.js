@@ -27,7 +27,7 @@ export default function Filter(props) {
             }
           </select>
 
-          <select id="cities" onChange={(e) => props.handleCityChange(e.target.value)}>
+          <select id="cities" onChange={props.handleCityChange}>
             <option value="">City</option>
             { cities.map(city => <option value={city} key={city}>{city}</option>) }
           </select>

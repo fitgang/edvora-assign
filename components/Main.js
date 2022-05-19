@@ -5,7 +5,7 @@ import Ride from "../components/Ride"
 export default function Main({ user, allRides }) {
 
   const [state, changeState] = useState(""),
-  [city, setCity] = useState(""),
+    [city, setCity] = useState(""),
     [tab, setTab] = useState("N"),
     [rides, setRides] = useState(arrangeRides(allRides, user));
 
@@ -16,8 +16,8 @@ export default function Main({ user, allRides }) {
 
   let ridesToShow = [];
   switch (tab) {
-    case "U": ridesToShow = getUpcomingRides(); break;
-    case "P": ridesToShow = getPastRides(); break;
+    case "U": ridesToShow = getUpcomingRides(rides); break;
+    case "P": ridesToShow = getPastRides(rides); break;
     default: ridesToShow = rides
   }
 
@@ -30,7 +30,7 @@ export default function Main({ user, allRides }) {
           <div className={"tab" + tab === "U" ? "show" : ""} onClick={() => handleTabChange("U")}>Upcoming rides ({numOfUpcomingRides})</div>
           <div className={"tab" + tab === "P" ? "show" : ""} onClick={() => handleTabChange("P")}>Past rides ({numOfPastRides})</div>
         </div>
-        <Filter mapping={mapping} filter={{state: state, city: city}} handleStateChange={handleStateChange} handleCityChange={handleCityChange} />
+        <Filter mapping={mapping} filter={{ state: state, city: city }} handleStateChange={handleStateChange} handleCityChange={handleCityChange} />
       </div>
 
       <div id="rides-container">
@@ -40,19 +40,47 @@ export default function Main({ user, allRides }) {
     </main>
   )
 
-  function handleStateChange(e) {
-    changeState(e.target.value);
-    console.log(state === e.target.value);
-    setRides(filterAllRides(allRides, {state: state, city: city}))
+  function getUpcomingRides(ridesArr) {
+    const currentTime = Date.now();
+    let upcomingRides = [];
+
+    for (const rideObj of ridesArr) {
+      // Calculate total number of milliseconds in the date given
+      const time = parseDate(rideObj);
+      if (time >= currentTime) upcomingRides.push(rideObj);
+    }
+
+    return upcomingRides
   }
 
-  function handleCityChange(city) {
-    setCity(city);
-    setRides(filterAllRides(allRides, {state: state, city: city}))
+  function getPastRides(ridesArr) {
+    const currentTime = Date.now();
+    let pastRides = [];
+
+    for (const rideObj of ridesArr) {
+      // Calculate total number of milliseconds in the date given
+      const time = parseDate(rideObj);
+      if (time < currentTime) pastRides.push(rideObj);
+    }
+
+    return pastRides
+  }
+
+  function handleStateChange(e) {
+    const newState = e.target.value;
+    changeState(newState);
+    setCity("")
+    setRides( arrangeRides( filterAllRides(allRides, { state: newState, city: "" }), user ) )
+  }
+
+  function handleCityChange(e) {
+    const newCity = e.target.value;
+    setCity(newCity);
+    setRides( arrangeRides( filterAllRides(allRides, { state: state, city: newCity }), user ) )
   }
 
   function handleTabChange(tab) {
-    setTab(tab)
+    setTab(tab);
   }
 
   function filterAllRides(allRides, filter) {
@@ -65,8 +93,8 @@ export default function Main({ user, allRides }) {
   function arrangeRides(ridesArr, user) {
     // Arranging the order of rides in ridesArr according to distance from lowest to highest
     ridesArr.forEach(rideObj => rideObj.distance = getDistance(rideObj, user));
-
-    return mergeSort(ridesArr, 0, ridesArr.length - 1)
+    ridesArr = mergeSort(ridesArr, 0, ridesArr.length - 1);
+    return ridesArr;
 
     function mergeSort(ridesArr, left, right) {
       if (left === right) return [ridesArr[left]];
@@ -123,52 +151,49 @@ export default function Main({ user, allRides }) {
       return distance
     }
   }
-}
 
-function getNumberOfUpcomingRides(ridesArr) {
-  const currentTime = Date.now();
-  let count = 0;
-
-  for (const rideObj of ridesArr) {
-
-    // Calculate total number of milliseconds in the date given
-    const time = parseDate(rideObj);
-    if (time > currentTime) count++;
+  function getNumberOfUpcomingRides(ridesArr) {
+    const currentTime = Date.now();
+    let count = 0;
+  
+    for (const rideObj of ridesArr) {
+  
+      // Calculate total number of milliseconds in the date given
+      const time = parseDate(rideObj);
+      if (time > currentTime) count++;
+    }
+  
+    return count
   }
 
-  return count
-}
-
-function parseDate(rideObj) {
-
-  let time = Date.parse(rideObj.date.substring(0, 10)) + Number(rideObj.date.substring(11, 13)) * 60 * 60 * 1000 + Number(rideObj.date.substring(14, 16)) * 60 * 1000;
-  if (rideObj.date.includes("PM")) time += 12 * 60 * 60 * 1000;
-
-  return time
-
-}
-
-function getMap(ridesArr) {
-  let stateAndCityMap = {};
-
-  for (const rideObj of ridesArr) {
-
-    if (!stateAndCityMap.hasOwnProperty(rideObj.state)) {
-      stateAndCityMap[rideObj.state] = { [rideObj.city]: rideObj.id }
-    }
-
-    else if (!stateAndCityMap[rideObj.state].hasOwnProperty(rideObj.city)) {
-      stateAndCityMap[rideObj.state][rideObj.city] = rideObj.id
-    }
-
-    else if (!Array.isArray(stateAndCityMap[rideObj.state][rideObj.city])) {
-      stateAndCityMap[rideObj.state][rideObj.city] = [stateAndCityMap[rideObj.state][rideObj.city], rideObj.id]
-    }
-
-    else {
-      stateAndCityMap[rideObj.state][rideObj.city].push(rideObj.id)
-    }
+  function parseDate(rideObj) {
+    let time = Date.parse(rideObj.date.substring(0, 10)) + Number(rideObj.date.substring(11, 13)) * 60 * 60 * 1000 + Number(rideObj.date.substring(14, 16)) * 60 * 1000;
+    if (rideObj.date.includes("PM")) time += 12 * 60 * 60 * 1000;
+    return time
   }
 
-  return stateAndCityMap
+  function getMap(ridesArr) {
+    let stateAndCityMap = {};
+  
+    for (const rideObj of ridesArr) {
+  
+      if (!stateAndCityMap.hasOwnProperty(rideObj.state)) {
+        stateAndCityMap[rideObj.state] = { [rideObj.city]: rideObj.id }
+      }
+  
+      else if (!stateAndCityMap[rideObj.state].hasOwnProperty(rideObj.city)) {
+        stateAndCityMap[rideObj.state][rideObj.city] = rideObj.id
+      }
+  
+      else if (!Array.isArray(stateAndCityMap[rideObj.state][rideObj.city])) {
+        stateAndCityMap[rideObj.state][rideObj.city] = [stateAndCityMap[rideObj.state][rideObj.city], rideObj.id]
+      }
+  
+      else {
+        stateAndCityMap[rideObj.state][rideObj.city].push(rideObj.id)
+      }
+    }
+  
+    return stateAndCityMap
+  }
 }
