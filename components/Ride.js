@@ -3,9 +3,9 @@ import Image from 'next/image'
 export default function Ride(props) {
   const rideObj = props.rideObj;
   return (
-    <div key={rideObj.id}>
+    <div>
 
-      <Image src={rideObj.map_url} width="250px" height="150px" className='rideImage' />
+      <Image src={rideObj.map_url} alt={`ride ${rideObj.id}`} width="250px" height="150px" className='rideImage' />
 
       <div className="details-container">
 

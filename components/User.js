@@ -8,7 +8,7 @@ export default function User(props) {
       <span className="username">
         {props.user.name}
       </span>
-      <Image src={props.user.url} width="50px" height="50px" className="userImage" />
+      <Image src={props.user.url} alt={props.user.name} width="50px" height="50px" className="userImage" />
       <style jsx>{
       `
         .username {

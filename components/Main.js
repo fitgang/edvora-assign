@@ -33,7 +33,7 @@ export default function Main({ user, allRides }) {
       </div>
 
       <div id="rides-container">
-        {ridesToShow.map(ride => <Ride rideObj={ride} />)}
+        {ridesToShow.map(ride => <Ride rideObj={ride} key={ride.id} />)}
       </div>
 
     </main>
