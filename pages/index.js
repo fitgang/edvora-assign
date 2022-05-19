@@ -39,7 +39,7 @@ export default function Home(props) {
         <User user={user} />
       </header>
 
-      <Main user={user} rides={rides}/>
+      <Main user={user} allRides={rides}/>
     </>
   )
 }
