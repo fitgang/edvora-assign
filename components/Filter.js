@@ -1,8 +1,6 @@
 export default function Filter(props) {
   const states = Object.keys(props.mapping);
-  const cities = props.filter.city !== ""
-    ? [props.filter.city]
-    : props.filter.state !== ""
+  const cities = props.filter.state !== ""
       ? Object.keys(props.mapping[props.filter.state])
       : [];
 
@@ -18,7 +16,8 @@ export default function Filter(props) {
         <div>Filter</div>
 
         <div id="filters">
-          <select id="states" onChange={(e) => props.handleStateChange(e.target.value)}>
+
+          <select id="states" onChange={props.handleStateChange}>
             <option value="">State</option>
             {
               states.map(state => {

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import User from '../components/User'
 import Main from "../components/Main"
 
-export async function getStaticProps(context) {
+export async function getStaticProps() {
 
   // Get user from an external api
   const userObj = await fetch("https://assessment.api.vweb.app/user")
@@ -24,10 +24,7 @@ export async function getStaticProps(context) {
 }
 
 export default function Home(props) {
-
-  const [user, setUser] = useState(props.user),
-    [rides, setRides] = useState(props.rides);
-
+  
   return (
     <>
       <Head>
@@ -36,10 +33,10 @@ export default function Home(props) {
 
       <header>
         <h1>edvora</h1>
-        <User user={user} />
+        <User user={props.user} />
       </header>
 
-      <Main user={user} allRides={rides}/>
+      <Main user={props.user} allRides={props.rides}/>
     </>
   )
 }

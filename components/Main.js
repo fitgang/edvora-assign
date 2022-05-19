@@ -4,14 +4,15 @@ import Ride from "../components/Ride"
 
 export default function Main({ user, allRides }) {
 
-  const [filter, setFilter] = useState({ state: "", city: "" }),
+  const [state, changeState] = useState(""),
+  [city, setCity] = useState(""),
     [tab, setTab] = useState("N"),
-    [rides, setRides] = useState(filterandArrangeAllRides(allRides, filter, user));
+    [rides, setRides] = useState(arrangeRides(allRides, user));
 
   const numOfUpcomingRides = getNumberOfUpcomingRides(rides),
     numOfPastRides = rides.length - numOfUpcomingRides;
 
-  const mapping = getMap(rides);
+  const mapping = getMap(allRides);
 
   let ridesToShow = [];
   switch (tab) {
@@ -25,41 +26,39 @@ export default function Main({ user, allRides }) {
 
       <div id="controls-wrapper">
         <div id="tab-wrapper">
-          <div className="tab show" onClick={() => handleTabChange("N")}>Nearest rides</div>
-          <div className="tab" onClick={() => handleTabChange("U")}>Upcoming rides ({numOfUpcomingRides})</div>
-          <div className="tab" onClick={() => handleTabChange("P")}>Past rides ({numOfPastRides})</div>
+          <div className={"tab" + tab === "N" ? "show" : ""} onClick={() => handleTabChange("N")}>Nearest rides</div>
+          <div className={"tab" + tab === "U" ? "show" : ""} onClick={() => handleTabChange("U")}>Upcoming rides ({numOfUpcomingRides})</div>
+          <div className={"tab" + tab === "P" ? "show" : ""} onClick={() => handleTabChange("P")}>Past rides ({numOfPastRides})</div>
         </div>
-        <Filter mapping={mapping} filter={filter} handleStateChange={handleStateChange} handleCityChange={handleCityChange} />
+        <Filter mapping={mapping} filter={{state: state, city: city}} handleStateChange={handleStateChange} handleCityChange={handleCityChange} />
       </div>
 
       <div id="rides-container">
-        {ridesToShow.map(ride => <Ride rideObj={ride} key={ride.id} />)}
+        {ridesToShow.map((ride, i) => <Ride rideObj={ride} key={`${ride.id}${ride.city}${i}`} />)}
       </div>
 
     </main>
   )
 
-  function handleStateChange(state) {
-    setFilter({ state: state, city: "" });
-    setRides(filterAllRides(allRides, filter))
+  function handleStateChange(e) {
+    changeState(e.target.value);
+    console.log(state === e.target.value);
+    setRides(filterAllRides(allRides, {state: state, city: city}))
   }
 
   function handleCityChange(city) {
-    setFilter(prevState => { return { ...prevState, city: city } });
-    setRides(filterAllRides(allRides, filter))
+    setCity(city);
+    setRides(filterAllRides(allRides, {state: state, city: city}))
   }
 
   function handleTabChange(tab) {
     setTab(tab)
   }
 
-  function filterandArrangeAllRides(allRides, filter, user) {
-    let ridesArr = filterAllRides(allRides, filter);
-    return arrangeRides(ridesArr, user);
-  }
-
   function filterAllRides(allRides, filter) {
-    let rides = allRides.filter(rideObj => rideObj.state === filter.state && rideObj.city === filter.city);
+    let rides = [...allRides];
+    if (filter.state !== "") rides = rides.filter(rideObj => rideObj.state === filter.state);
+    if (filter.city !== "") rides = rides.filter(rideObj => rideObj.city === filter.city);
     return rides
   }
 
@@ -70,15 +69,16 @@ export default function Main({ user, allRides }) {
     return mergeSort(ridesArr, 0, ridesArr.length - 1)
 
     function mergeSort(ridesArr, left, right) {
-      if (left >= right) return [];
+      if (left === right) return [ridesArr[left]];
+      if (left > right) return [];
 
       const mid = (left + right) >> 1;
       const leftArr = mergeSort(ridesArr, left, mid),
         rightArr = mergeSort(ridesArr, mid + 1, right);
 
-      let mergedArr = Array(right - left + 1).fill(null);
+      let mergedArr = Array(leftArr.length + rightArr.length).fill(null);
 
-      for (let i = 0, j = 0, k = 0, m = leftArr.length - 1, n = rightArr.length - 1; k <= right; k++) {
+      for (let i = 0, j = 0, k = 0, m = leftArr.length - 1, n = rightArr.length - 1; k < mergedArr.length; k++) {
 
         if (i > m) {
           mergedArr[k] = rightArr[j];
