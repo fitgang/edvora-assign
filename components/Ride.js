@@ -40,7 +40,7 @@ export default function Ride(props) {
         <div className="region">{rideObj.city}</div>
         <div className="region">{rideObj.state}</div>
       </div>
-      
+
     </div>
   )
 }
