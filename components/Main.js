@@ -1,9 +1,24 @@
+import { useState } from "react";
+import Filter from "../components/Filter"
+
 export default function Main({ user, rides }) {
 
   // Calculate nearest rides
-  // Calculate upcoming rides
-  const numOfUpcomingRides = getNumberOfUpcomingRides(rides);
-  // Calculate past rides
+
+  const numOfUpcomingRides = getNumberOfUpcomingRides(rides),
+    numOfPastRides = rides.length - numOfUpcomingRides;
+
+  const mapping = getMap(rides);
+
+  const [filter, setFilter] = useState({state: "", city: ""});
+
+  function handleStateChange(state) {
+    setFilter({state: state, city: ""})
+  }
+
+  function handleCityChange(city) {
+    setFilter(prevState => { return {...prevState, city: city} })
+  }
 
   return (
     <main className="main">
@@ -11,8 +26,9 @@ export default function Main({ user, rides }) {
         <div id="tab-wrapper">
           <div className="tab">Nearest rides</div>
           <div className="tab">Upcoming rides ({numOfUpcomingRides})</div>
-          <div className="tab">Past rides</div>
+          <div className="tab">Past rides ({numOfPastRides})</div>
         </div>
+        <Filter mapping={mapping} filter={filter} handleStateChange={handleStateChange} handleCityChange={handleCityChange}/>
       </div>
     </main>
   )
@@ -39,4 +55,29 @@ function parseDate(rideObj) {
 
   return time
 
+}
+
+function getMap(ridesArr) {
+  let stateAndCityMap = {};
+
+  for (const rideObj of ridesArr) {
+
+    if ( !stateAndCityMap.hasOwnProperty( rideObj.state ) ) {
+      stateAndCityMap[rideObj.state] = { [ rideObj.city ]: rideObj.id }
+    }
+
+    else if ( !stateAndCityMap[ rideObj.state ].hasOwnProperty(rideObj.city) ) {
+      stateAndCityMap[rideObj.state][rideObj.city] = rideObj.id
+    }
+
+    else if ( !Array.isArray( stateAndCityMap[rideObj.state][rideObj.city] ) ) {
+      stateAndCityMap[rideObj.state][rideObj.city] = [stateAndCityMap[rideObj.state][rideObj.city], rideObj.id]
+    }
+
+    else {
+      stateAndCityMap[rideObj.state][rideObj.city].push(rideObj.id)
+    }
+  }
+
+  return stateAndCityMap
 }

@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
-import styles from '../styles/Home.module.css'
 import User from '../components/User'
 import Main from "../components/Main"
 
@@ -35,7 +34,7 @@ export default function Home(props) {
         <title>Find Your Ride</title>
       </Head>
 
-      <header className={styles.header}>
+      <header>
         <h1>edvora</h1>
         <User user={user} />
       </header>
