@@ -21,7 +21,7 @@ export default function Ride(props) {
 
         <div className='detail'>
           <span className="property">Station Path : </span>
-          <span className="value">{rideObj.station_path}</span>
+          <span className="value">[{rideObj.station_path.map(path => ` ${path},`)}]</span>
         </div>
 
         <div className='detail'>

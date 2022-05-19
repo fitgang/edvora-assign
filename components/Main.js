@@ -26,9 +26,9 @@ export default function Main({ user, allRides }) {
 
       <div id="controls-wrapper">
         <div id="tab-wrapper">
-          <div className={"tab" + tab === "N" ? "show" : ""} onClick={() => handleTabChange("N")}>Nearest rides</div>
-          <div className={"tab" + tab === "U" ? "show" : ""} onClick={() => handleTabChange("U")}>Upcoming rides ({numOfUpcomingRides})</div>
-          <div className={"tab" + tab === "P" ? "show" : ""} onClick={() => handleTabChange("P")}>Past rides ({numOfPastRides})</div>
+          <div className={`tab ${tab === "N" ? "show" : ""}`} onClick={() => handleTabChange("N")}>Nearest rides</div>
+          <div className={`tab ${tab === "U" ? "show" : ""}`} onClick={() => handleTabChange("U")}>Upcoming rides ({numOfUpcomingRides})</div>
+          <div className={`tab ${tab === "P" ? "show" : ""}`} onClick={() => handleTabChange("P")}>Past rides ({numOfPastRides})</div>
         </div>
         <Filter mapping={mapping} filter={{ state: state, city: city }} handleStateChange={handleStateChange} handleCityChange={handleCityChange} />
       </div>
