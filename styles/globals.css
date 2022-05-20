@@ -66,13 +66,17 @@ main {
 
 #filter-btn {
   display: flex;
-  gap: 5px;
+  gap: 0.5em;
   font-size: 1.125em;
   letter-spacing: 1px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  align-items: center;
 }
 
 svg {
-  width: 1em;
+  height: 0.9em;
 }
 
 #filter-wrapper {
@@ -140,6 +144,10 @@ path {
   fill: #fff;
 }
 
+#rides-container {
+  font-size: 1.125em;
+}
+
 .ride {
   padding: 1.5em 2em;
   background: var(--pri-col);
@@ -150,6 +158,35 @@ path {
   margin-bottom: 1.5em;
 }
 
+.rideImage {
+  -o-object-fit: cover;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
 .details-container {
   padding: 0 2em;
+  height: 100%;
+  display: grid;
+  align-items: center;
+}
+
+.property {
+  -webkit-filter: brightness(70%);
+  filter: brightness(70%);
+}
+
+.region-container {
+  align-self: start;
+  display: flex;
+  gap: 1em;
+}
+
+.region {
+  background: var(--sec-col);
+  font-size: 0.9em;
+  padding: 0.25em 1em;
+  letter-spacing: 0.5px;
+  border-radius: 20px;
+  height: 100%;
 }

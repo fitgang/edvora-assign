@@ -5,33 +5,33 @@ export default function Ride(props) {
   return (
     <div className='ride'>
 
-      <Image src={rideObj.map_url} alt={`ride ${rideObj.id}`} width="250px" height="150px" className='rideImage' />
+      <Image src={rideObj.map_url} alt={`ride ${rideObj.id}`} width="300px" height="200px" className='rideImage' />
 
       <div className="details-container">
 
-        <div className='detail'>
+        <div>
           <span className="property">Ride Id : </span>
-          <span className="value">{rideObj.id}</span>
+          <span>{rideObj.id}</span>
         </div>
 
-        <div className='detail'>
+        <div>
           <span className="property">Origin Station : </span>
-          <span className="value">{rideObj.origin_station_code}</span>
+          <span>{rideObj.origin_station_code}</span>
         </div>
 
-        <div className='detail'>
+        <div>
           <span className="property">Station Path : </span>
-          <span className="value">[{rideObj.station_path.map(path => ` ${path},`)}]</span>
+          <span>[{rideObj.station_path.map(path => ` ${path},`)}]</span>
         </div>
 
-        <div className='detail'>
+        <div>
           <span className="property">Date : </span>
-          <span className="value">{rideObj.date}</span>
+          <span>{rideObj.date}</span>
         </div>
 
-        <div className='detail'>
+        <div>
           <span className="property">Distance : </span>
-          <span className="value">{rideObj.distance}</span>
+          <span>{rideObj.distance}</span>
         </div>
 
       </div>

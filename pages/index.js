@@ -6,10 +6,9 @@ import Main from "../components/Main"
 export async function getStaticProps() {
 
   // Get user from an external api
-  // const userObj = await fetch("https://assessment.api.vweb.app/user")
-  //   .then(res => res.json())
-  //   .catch(err => console.error(err));
-  const userObj = {}
+  const userObj = await fetch("https://assessment.api.vweb.app/user")
+    .then(res => res.json())
+    .catch(err => console.error(err));
 
   // Get rides for the user
   const ridesArr = await fetch("https://assessment.api.vweb.app/rides")
@@ -34,7 +33,7 @@ export default function Home(props) {
 
       <header>
         <h1>Edvora</h1>
-        {/* <User user={props.user} /> */}
+        <User user={props.user} />
       </header>
 
       <Main user={props.user} allRides={props.rides}/>
